@@ -4,7 +4,5 @@ __pycache__/
 .env
 data/
 mysql_data/
-<<<<<<< HEAD
-=======
 airflow/logs/
->>>>>>> d216e9f (Reinitialize Git in the correct directory)
+connect_mysql.py/
