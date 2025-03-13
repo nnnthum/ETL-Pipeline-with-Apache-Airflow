@@ -1,0 +1,10 @@
+# ไฟล์/โฟลเดอร์ที่ไม่ต้องการอัปโหลด
+__pycache__/
+*.pyc
+.env
+data/
+mysql_data/
+<<<<<<< HEAD
+=======
+airflow/logs/
+>>>>>>> d216e9f (Reinitialize Git in the correct directory)

@@ -1,0 +1,57 @@
+# ใช้ Docker Compose เวอร์ชัน 3.8
+version: '3.8'
+
+services:
+  # บริการ MySQL Database
+  mysql:
+    # ใช้ MySQL เวอร์ชัน 8.0
+    image: mysql:8.0
+    
+    # กำหนดตัวแปร environment เพื่อสร้างฐานข้อมูลและผู้ใช้
+    environment:
+      MYSQL_ROOT_PASSWORD: root     # รหัสผ่าน root ของ MySQL
+      MYSQL_DATABASE: sales_db       # ชื่อ Database ที่จะสร้าง
+      MYSQL_USER: user               # ชื่อ user สำหรับเชื่อมต่อ
+      MYSQL_PASSWORD: password       # รหัสผ่านของ user
+      
+    # เปิดพอร์ต 3306 ของ container ให้เข้าถึงจากเครื่อง host
+    ports:
+      - "3306:3306"
+    
+    # สร้าง volume เพื่อเก็บข้อมูลถาวร (persistent data)
+    volumes:
+      - mysql_data:/var/lib/mysql
+    
+    # Healthcheck เพื่อตรวจสอบว่า MySQL พร้อมใช้งานหรือยัง
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"] # ใช้คำสั่ง ping เพื่อตรวจสอบ
+      timeout: 20s  # รอ 20 วินาทีก่อน timeout
+      retries: 10    # ลองเชื่อมต่อใหม่ได้ 10 ครั้ง
+
+  # บริการสำหรับรันแอป ETL Pipeline
+  app:
+    # สร้าง image จาก Dockerfile ในโฟลเดอร์ปัจจุบัน (.)
+    build: .
+    
+    # ให้ app รอจนกว่า mysql จะพร้อม (healthy)
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+    # ตัวแปร environment สำหรับเชื่อมต่อ MySQL จากใน container
+    environment:
+      MYSQL_HOST: mysql          # ใช้ชื่อ mysql เพราะมันคือชื่อ service ใน docker network
+      MYSQL_USER: user           # user ที่สร้างไว้ใน MySQL
+      MYSQL_PASSWORD: password   # password ที่กำหนด
+      MYSQL_DB: sales_db         # database ที่จะเชื่อมต่อ
+      
+    # ผูก volume เพื่อให้โค้ดในโฟลเดอร์ปัจจุบัน sync กับ /app ใน container
+    volumes:
+      - .:/app
+    
+    # รันคำสั่ง python main.py เมื่อ container เริ่มทำงาน
+    command: ["python", "main.py"]
+
+# กำหนด named volume เพื่อเก็บข้อมูล MySQL แบบถาวร (แม้ปิด container ข้อมูลจะไม่หาย)
+volumes:
+  mysql_data:

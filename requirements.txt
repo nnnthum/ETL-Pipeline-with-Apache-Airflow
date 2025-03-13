@@ -1,0 +1,8 @@
+pandas
+mysql-connector-python
+<<<<<<< HEAD
+python-dotenv
+=======
+python-dotenv
+pymysql
+>>>>>>> d216e9f (Reinitialize Git in the correct directory)
