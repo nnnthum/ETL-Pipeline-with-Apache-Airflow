@@ -1,5 +1,6 @@
+apache-airflow[celery,postgres,redis]
 pandas
-mysql-connector-python
-python-dotenv
-python-dotenv
-pymysql
+google-cloud-storage
+sqlalchemy
+fuzzywuzzy
+Faker

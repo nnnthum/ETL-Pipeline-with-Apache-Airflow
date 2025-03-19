@@ -1,8 +1,0 @@
-# ไฟล์/โฟลเดอร์ที่ไม่ต้องการอัปโหลด
-__pycache__/
-*.pyc
-.env
-data/
-mysql_data/
-airflow/logs/
-connect_mysql.py/
